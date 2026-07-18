@@ -17,7 +17,7 @@ const GAP_MS = 400;
 
 export function TypewriterHeadline() {
   const [index, setIndex] = useState(0);
-  const [text, setText] = useState(LINES[0]);
+  const [text, setText] = useState<string>(LINES[0]);
   const [deleting, setDeleting] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
