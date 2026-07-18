@@ -1,21 +1,20 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sending";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("sending");
-    setErrorMessage("");
 
     const form = event.currentTarget;
     const data = {
@@ -36,23 +35,17 @@ export function ContactForm() {
         throw new Error(body.error ?? "Something went wrong. Please try again.");
       }
 
-      setStatus("sent");
+      toast.success("Message sent.", {
+        description: "Thanks for reaching out — we'll reply within one business day.",
+      });
       form.reset();
     } catch (err) {
-      setStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Something went wrong.");
+      toast.error("Couldn't send your message", {
+        description: err instanceof Error ? err.message : "Something went wrong.",
+      });
+    } finally {
+      setStatus("idle");
     }
-  }
-
-  if (status === "sent") {
-    return (
-      <div className="rounded-lg border border-primary/30 bg-primary/10 px-6 py-8 text-center">
-        <p className="font-heading text-lg text-primary">Message sent.</p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Thanks for reaching out — we&apos;ll reply within one business day.
-        </p>
-      </div>
-    );
   }
 
   return (
@@ -71,10 +64,6 @@ export function ContactForm() {
         <Label htmlFor="message">Tell us about the project</Label>
         <Textarea id="message" name="message" rows={5} required />
       </div>
-
-      {status === "error" && (
-        <p className="text-sm text-destructive">{errorMessage}</p>
-      )}
 
       <Button type="submit" size="lg" disabled={status === "sending"} className="w-full sm:w-auto">
         {status === "sending" ? "Sending…" : "Send message"}
