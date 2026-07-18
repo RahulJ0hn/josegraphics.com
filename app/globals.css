@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-display);
+  --font-mango: var(--font-mango);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* Jose Graphics brand theme: near-black charcoal + a single brass/gold accent,
+     in the register of a dark creative-tool chrome (Illustrator/Photoshop panels)
+     rather than a typical SaaS light/dark toggle. There is intentionally no .dark
+     variant — this is the site's one fixed identity. */
+  --background: #0b0c0a;
+  --foreground: #f3efe4;
+  --card: #17180f;
+  --card-foreground: #f3efe4;
+  --popover: #17180f;
+  --popover-foreground: #f3efe4;
+  --primary: #c9a24d;
+  --primary-foreground: #14150e;
+  --secondary: #1e2019;
+  --secondary-foreground: #f3efe4;
+  --muted: #1a1b16;
+  --muted-foreground: #a39d8c;
+  --accent: #c9a24d;
+  --accent-foreground: #14150e;
+  --destructive: #b5544a;
+  --border: color-mix(in oklab, #f3efe4 10%, transparent);
+  --input: color-mix(in oklab, #f3efe4 14%, transparent);
+  --ring: #c9a24d;
+  --chart-1: #c9a24d;
+  --chart-2: #a39d8c;
+  --chart-3: #6b6a5e;
+  --chart-4: #4a4c3f;
+  --chart-5: #2a2c22;
+  --radius: 0.4rem;
+  --sidebar: #17180f;
+  --sidebar-foreground: #f3efe4;
+  --sidebar-primary: #c9a24d;
+  --sidebar-primary-foreground: #14150e;
+  --sidebar-accent: #1e2019;
+  --sidebar-accent-foreground: #f3efe4;
+  --sidebar-border: color-mix(in oklab, #f3efe4 10%, transparent);
+  --sidebar-ring: #c9a24d;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@keyframes wall-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes wall-scroll-reverse {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-wall-scroll {
+  animation-name: wall-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.animate-wall-scroll-reverse {
+  animation-name: wall-scroll-reverse;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.wall-fade {
+  background:
+    radial-gradient(
+      ellipse at center,
+      color-mix(in oklab, var(--background) 35%, transparent) 0%,
+      color-mix(in oklab, var(--background) 78%, transparent) 55%,
+      var(--background) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--background) 55%, transparent) 0%,
+      color-mix(in oklab, var(--background) 15%, transparent) 30%,
+      var(--background) 100%
+    );
+}
