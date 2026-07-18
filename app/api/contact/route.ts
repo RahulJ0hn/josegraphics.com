@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   const { error } = await resend.emails.send({
-    from: `${siteConfig.name} Website <onboarding@resend.dev>`,
+    from: `${siteConfig.name} Website <${siteConfig.email}>`,
     to: siteConfig.email,
     replyTo: email,
     subject: `New project inquiry from ${name}`,
