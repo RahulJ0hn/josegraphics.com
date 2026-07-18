@@ -144,3 +144,18 @@
       var(--background) 100%
     );
 }
+
+@keyframes type-caret {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-type-caret {
+  animation: type-caret 0.9s steps(1, end) infinite;
+}

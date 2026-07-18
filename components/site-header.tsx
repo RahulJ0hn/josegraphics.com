@@ -32,8 +32,11 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "font-heading text-sm tracking-[0.15em] uppercase transition-colors hover:text-primary",
-                  active ? "text-primary" : "text-foreground/80"
+                  "relative font-heading text-sm tracking-[0.15em] uppercase transition-colors hover:text-primary sm:text-base",
+                  "after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:bg-primary after:transition-transform after:duration-300 after:ease-out",
+                  active
+                    ? "text-primary after:scale-x-100"
+                    : "text-foreground/80 after:scale-x-0 hover:after:scale-x-100"
                 )}
               >
                 {item.label}
@@ -55,17 +58,27 @@ export function SiteHeader() {
       {open && (
         <nav className="border-t border-border/60 bg-background md:hidden">
           <ul className="mx-auto flex max-w-6xl flex-col px-6 py-4">
-            {siteConfig.nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="block py-3 font-heading text-sm tracking-[0.15em] uppercase text-foreground/80 hover:text-primary"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {siteConfig.nav.map((item) => {
+              const active =
+                item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      "relative inline-block py-3 font-heading text-base tracking-[0.15em] uppercase transition-colors hover:text-primary",
+                      "after:absolute after:inset-x-0 after:bottom-2 after:h-px after:origin-left after:bg-primary after:transition-transform after:duration-300 after:ease-out",
+                      active
+                        ? "text-primary after:scale-x-100"
+                        : "text-foreground/80 after:scale-x-0"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       )}

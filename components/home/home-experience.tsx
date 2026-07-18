@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { PosterWall } from "@/components/home/poster-wall";
+import { TypewriterHeadline } from "@/components/home/typewriter-headline";
 
 export function HomeExperience() {
   return (
@@ -11,9 +12,7 @@ export function HomeExperience() {
           <p className="animate-in fade-in slide-in-from-bottom-2 font-heading text-xs tracking-[0.35em] text-primary uppercase duration-700">
             Vector Conversion &amp; Embroidery Digitizing
           </p>
-          <h1 className="animate-in fade-in slide-in-from-bottom-4 mt-6 font-mango text-5xl leading-[1.05] text-foreground duration-700 sm:text-7xl">
-            Every piece starts as a point.
-          </h1>
+          <TypewriterHeadline />
           <p className="animate-in fade-in slide-in-from-bottom-4 mt-6 text-base leading-relaxed text-muted-foreground delay-100 duration-700 sm:text-lg">
             20 years redrawing artwork by hand into vector art and
             embroidery-ready files, trusted by clients worldwide.
@@ -23,6 +22,23 @@ export function HomeExperience() {
               View our work
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border/60">
+        <div className="mx-auto max-w-3xl px-6 py-24 text-center">
+          <p className="font-heading text-xs tracking-[0.35em] text-primary uppercase">
+            How we work with you
+          </p>
+          <h2 className="mt-6 font-mango text-3xl leading-[1.15] text-foreground sm:text-5xl">
+            We are ready to operate as your{" "}
+            <span className="text-primary">internal art studio</span> and{" "}
+            <span className="text-primary">creative graphic production hub</span>.
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Hand off conceptual development and technical layout work to us —
+            keep your focus on creative direction and client strategy.
+          </p>
         </div>
       </section>
 
