@@ -35,9 +35,7 @@ type TransitionState = {
   onSettle: (idx: number) => void;
 };
 
-// "object-fit: contain" for a texture sampled inside a differently-shaped
-// plane: the full texture stays visible, letterboxed on the shorter axis,
-// instead of being cropped to fill (which is what "cover" math would do).
+// object-fit: contain — full texture visible, letterboxed on the shorter axis.
 function containScaleOffset(textureAspect: number, planeAspect: number) {
   if (textureAspect > planeAspect) {
     const scaleY = textureAspect / planeAspect;
@@ -103,7 +101,9 @@ function Scene({
   const uvs = useMemo(
     () =>
       textures.map((tex) => {
-        if (!tex) return { scale: new THREE.Vector2(1, 1), offset: new THREE.Vector2(0, 0) };
+        if (!tex) {
+          return { scale: new THREE.Vector2(1, 1), offset: new THREE.Vector2(0, 0) };
+        }
         const img = tex.image as { width: number; height: number };
         return containScaleOffset(img.width / img.height, planeAspect);
       }),
@@ -111,9 +111,6 @@ function Scene({
   );
 
   useEffect(() => {
-    // Show the current stage immediately on mount/texture-load — otherwise
-    // the shader's default (empty) textures render as solid black until the
-    // first toggle click ever starts a transition.
     const material = materialRef.current;
     const initial = textures[transitionRef.current.fromIdx];
     if (material && initial) {
@@ -176,10 +173,11 @@ const DitherCanvas = memo(function DitherCanvas({
   return (
     <Canvas
       frameloop="demand"
-      gl={{ antialias: false, powerPreference: "high-performance" }}
+      gl={{ antialias: false, powerPreference: "high-performance", alpha: false }}
       dpr={1}
       resize={{ offsetSize: true }}
     >
+      <color attach="background" args={["#f7f4ec"]} />
       <Scene textures={textures} planeAspect={ratio} transitionRef={transitionRef} />
     </Canvas>
   );
@@ -210,6 +208,17 @@ export function DitherReveal({
   const textures = useMemo(() => [tex0, tex1, tex2], [tex0, tex1, tex2]);
 
   const [displayIndex, setDisplayIndex] = useState(0);
+  // Size the frame to the active stage so it fills the border (no spare
+  // letterbox from sizing to a wider sibling image).
+  const planeAspect = useMemo(() => {
+    const tex = textures[displayIndex];
+    if (tex?.image) {
+      const img = tex.image as { width: number; height: number };
+      if (img.width && img.height) return img.width / img.height;
+    }
+    return ratio;
+  }, [textures, displayIndex, ratio]);
+
   const activeIndexRef = useRef(0);
   const transitionRef = useRef<TransitionState>({
     fromIdx: 0,
@@ -223,9 +232,6 @@ export function DitherReveal({
 
   const goTo = (idx: number) => {
     if (idx >= stages.length) return;
-    // If a transition is already in flight, treat wherever it was headed as
-    // the starting point — otherwise a quick second click would snap back
-    // to the last fully-settled stage instead of interrupting cleanly.
     const t = transitionRef.current;
     const currentIdx = t.active ? t.toIdx : activeIndexRef.current;
     if (idx === currentIdx) return;
@@ -238,8 +244,6 @@ export function DitherReveal({
         activeIndexRef.current = settledIdx;
       },
     };
-    // Kick the demand frameloop without waiting on React, then update the
-    // button styles in a transition so the click can paint first (INP).
     invalidate();
     startTransition(() => setDisplayIndex(idx));
   };
@@ -248,22 +252,34 @@ export function DitherReveal({
   const singleImage = stages.length <= 1;
 
   return (
-    <div>
-      <div style={{ perspective: "700px" }}>
-        <div
-          style={{ aspectRatio: ratio, transform: "rotateY(-28deg) rotateX(4deg)" }}
-          className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-xl border border-border/60 bg-card shadow-2xl"
-        >
-          {singleImage ? (
-            <Image src={after} alt={alt} fill sizes="700px" className="object-contain p-6" />
-          ) : allLoaded ? (
-            <DitherCanvas textures={textures} ratio={ratio} transitionRef={transitionRef} />
-          ) : null}
-        </div>
+    <div className="w-full">
+      {/* Flat frame — no 3D tilt. The old rotateY + overflow:hidden was clipping
+          the car/building edges and covering the stage buttons below. */}
+      <div
+        className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-xl border border-border/60 bg-[#f7f4ec] shadow-2xl"
+        style={{ aspectRatio: planeAspect }}
+      >
+        {singleImage ? (
+          <Image
+            src={after}
+            alt={alt}
+            fill
+            sizes="700px"
+            className="object-contain"
+          />
+        ) : allLoaded ? (
+          <DitherCanvas
+            textures={textures}
+            ratio={planeAspect}
+            transitionRef={transitionRef}
+          />
+        ) : (
+          <div className="absolute inset-0 animate-pulse bg-[#f7f4ec]" />
+        )}
       </div>
 
       {!singleImage && (
-        <div className="mt-5 flex justify-center gap-2">
+        <div className="relative z-10 mt-5 mb-1 flex flex-wrap justify-center gap-2 pb-1">
           {stages.map((stage, i) => (
             <button
               key={stage.key}

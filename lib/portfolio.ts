@@ -19,10 +19,10 @@ export const portfolioItems: PortfolioItem[] = [
     category: "Illustration",
     description:
       "A race-day photograph hand-redrawn into layered vector artwork, built for large-format printing without losing a single flame highlight.",
-    before: "/portfolio/hot-rod-before.jpg",
-    wireframe: "/portfolio/hot-rod-wireframe.jpg",
-    after: "/portfolio/hot-rod-after.jpg",
-    ratio: 622 / 389,
+    before: "/portfolio/hot-rod-before-full.jpg",
+    wireframe: "/portfolio/hot-rod-wireframe-full.jpg",
+    after: "/portfolio/hot-rod-after-full.jpg",
+    ratio: 904 / 418,
   },
   {
     slug: "heritage-building",
@@ -34,7 +34,7 @@ export const portfolioItems: PortfolioItem[] = [
     before: "/portfolio/heritage-building-before.jpg",
     wireframe: "/portfolio/heritage-building-wireframe.jpg",
     after: "/portfolio/heritage-building-after.jpg",
-    ratio: 561 / 417,
+    ratio: 724 / 420,
   },
   {
     slug: "coat-of-arms",
@@ -46,7 +46,7 @@ export const portfolioItems: PortfolioItem[] = [
     before: "/portfolio/coat-of-arms-before.jpg",
     wireframe: "/portfolio/coat-of-arms-wireframe.jpg",
     after: "/portfolio/coat-of-arms-after.jpg",
-    ratio: 444 / 474,
+    ratio: 460 / 500,
   },
   {
     slug: "wheel-loader",
@@ -58,7 +58,7 @@ export const portfolioItems: PortfolioItem[] = [
     before: "/portfolio/wheel-loader-before.jpg",
     wireframe: "/portfolio/wheel-loader-wireframe.jpg",
     after: "/portfolio/wheel-loader-after.jpg",
-    ratio: 524 / 431,
+    ratio: 609 / 428,
   },
   {
     slug: "nutriday",
@@ -70,7 +70,7 @@ export const portfolioItems: PortfolioItem[] = [
     before: "/portfolio/nutriday-before.jpg",
     wireframe: "/portfolio/nutriday-wireframe.jpg",
     after: "/portfolio/nutriday-after.jpg",
-    ratio: 413 / 488,
+    ratio: 409 / 530,
   },
   {
     slug: "johns-transporting",
@@ -82,7 +82,7 @@ export const portfolioItems: PortfolioItem[] = [
     before: "/portfolio/johns-transporting-before.jpg",
     wireframe: null,
     after: "/portfolio/johns-transporting-after.jpg",
-    ratio: 929 / 644,
+    ratio: 978 / 679,
   },
   {
     slug: "bold-city-brass",
@@ -94,7 +94,7 @@ export const portfolioItems: PortfolioItem[] = [
     before: "/portfolio/bold-city-brass-before.jpg",
     wireframe: null,
     after: "/portfolio/bold-city-brass-after.jpg",
-    ratio: 684 / 644,
+    ratio: 720 / 679,
   },
   {
     slug: "allatoona-njrotc",

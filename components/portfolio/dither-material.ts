@@ -75,7 +75,7 @@ export const DitherMaterial = shaderMaterial(
     uFromOffset: new THREE.Vector2(0, 0),
     uToScale: new THREE.Vector2(1, 1),
     uToOffset: new THREE.Vector2(0, 0),
-    uBgColor: new THREE.Color("#17180f"),
+    uBgColor: new THREE.Color("#f7f4ec"),
   },
   vertexShader,
   fragmentShader

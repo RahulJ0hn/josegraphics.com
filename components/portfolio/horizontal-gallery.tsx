@@ -10,9 +10,17 @@ function lerp(start: number, end: number, ease: number) {
   return start + (end - start) * ease;
 }
 
-const AUTO_SCROLL_SPEED = 60; // px/second — constant, default pace
-const RESUME_DELAY = 1800; // ms of inactivity before auto-scroll resumes
+const AUTO_SCROLL_SPEED = 60;
+const RESUME_DELAY = 1800;
 const LOOP_COPIES = 3;
+/** Max height of the artwork well; width follows each item's native ratio. */
+const IMAGE_MAX_HEIGHT = 260;
+
+function frameSize(ratio: number) {
+  const height = IMAGE_MAX_HEIGHT;
+  const width = Math.round(height * ratio);
+  return { width, height };
+}
 
 export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -37,7 +45,6 @@ export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
     let touchDragging = false;
 
     const recalcSetWidth = () => {
-      // one copy's width = total track width / number of copies
       setWidth = track.scrollWidth / LOOP_COPIES;
     };
 
@@ -71,7 +78,7 @@ export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
       const dy = touchStartY - event.touches[0].clientY;
 
       if (!touchDragging) {
-        if (Math.abs(dx) <= Math.abs(dy)) return; // vertical intent: let the page scroll
+        if (Math.abs(dx) <= Math.abs(dy)) return;
         touchDragging = true;
       }
 
@@ -127,43 +134,48 @@ export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
   return (
     <div ref={containerRef} className="relative h-[420px] overflow-hidden">
       <div ref={trackRef} className="flex h-full w-max items-center gap-6 px-[8vw] will-change-transform">
-        {loopItems.map((item, i) => (
-          <Link
-            key={`${item.slug}-${i}`}
-            href={`/portfolio/${item.slug}`}
-            className="group block h-[340px] w-[300px] shrink-0"
-          >
-            <div className="relative h-full w-full overflow-hidden rounded-xl border border-border/60 bg-card shadow-xl transition-colors duration-300 group-hover:border-primary/50">
-              <Image
-                src={item.after}
-                alt={item.title}
-                fill
-                sizes="300px"
-                className="object-contain p-6 transition-transform duration-500 group-hover:scale-[1.03]"
-              />
+        {loopItems.map((item, i) => {
+          const { width, height } = frameSize(item.ratio);
+          return (
+            <Link
+              key={`${item.slug}-${i}`}
+              href={`/portfolio/${item.slug}`}
+              className="group block shrink-0"
+              style={{ width }}
+            >
+              <div className="rounded-xl border border-border/60 bg-card shadow-xl transition-colors duration-300 group-hover:border-primary/40">
+                <div
+                  className="relative overflow-hidden rounded-t-xl bg-[#f7f4ec]"
+                  style={{ width, height, aspectRatio: `${item.ratio}` }}
+                >
+                  {/* Same recropped file as the detail popup — frame matches its ratio. */}
+                  <Image
+                    src={item.after}
+                    alt={item.title}
+                    fill
+                    sizes={`${width}px`}
+                    className="object-contain"
+                  />
+                </div>
 
-              <div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent"
-                aria-hidden="true"
-              />
-
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6">
-                <p className="text-xs tracking-[0.2em] text-primary uppercase">
-                  {item.category}
-                </p>
-                <div className="mt-1 flex items-end justify-between gap-3">
-                  <h3 className="font-heading text-xl leading-tight text-foreground">
-                    {item.title}
-                  </h3>
-                  <span className="flex shrink-0 translate-y-1 items-center gap-1 text-xs tracking-wide text-foreground/0 uppercase transition-all duration-300 group-hover:translate-y-0 group-hover:text-foreground/80">
-                    View
-                    <ArrowUpRight size={14} />
-                  </span>
+                <div className="px-4 py-3">
+                  <p className="text-xs tracking-[0.2em] text-primary uppercase">
+                    {item.category}
+                  </p>
+                  <div className="mt-1 flex items-end justify-between gap-3">
+                    <h3 className="font-heading text-lg leading-tight text-foreground">
+                      {item.title}
+                    </h3>
+                    <span className="flex shrink-0 items-center gap-1 text-xs tracking-wide text-foreground/50 uppercase transition-colors group-hover:text-foreground/80">
+                      View
+                      <ArrowUpRight size={14} />
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
