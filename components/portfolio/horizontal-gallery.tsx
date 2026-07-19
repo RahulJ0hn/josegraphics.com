@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
-import { startTransition, useEffect, useRef, type MouseEvent } from "react";
+import { useEffect, useRef } from "react";
 import type { PortfolioItem } from "@/lib/portfolio";
 
 function lerp(start: number, end: number, ease: number) {
@@ -16,27 +15,10 @@ const RESUME_DELAY = 1800; // ms of inactivity before auto-scroll resumes
 const LOOP_COPIES = 3;
 
 export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const loopItems = Array.from({ length: LOOP_COPIES }, () => items).flat();
-
-  function goTo(href: string, event: MouseEvent<HTMLAnchorElement>) {
-    if (
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey ||
-      event.button !== 0
-    ) {
-      return;
-    }
-    event.preventDefault();
-    startTransition(() => {
-      router.push(href);
-    });
-  }
 
   useEffect(() => {
     const container = containerRef.current;
@@ -149,8 +131,6 @@ export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
           <Link
             key={`${item.slug}-${i}`}
             href={`/portfolio/${item.slug}`}
-            prefetch
-            onClick={(event) => goTo(`/portfolio/${item.slug}`, event)}
             className="group block h-[340px] w-[300px] shrink-0"
           >
             <div className="relative h-full w-full overflow-hidden rounded-xl border border-border/60 bg-card shadow-xl transition-colors duration-300 group-hover:border-primary/50">

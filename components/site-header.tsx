@@ -1,43 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { startTransition, useState, type MouseEvent } from "react";
+import { useLinkStatus } from "next/link";
+import { usePathname } from "next/navigation";
+import { startTransition, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
-function isModifiedClick(event: MouseEvent<HTMLAnchorElement>) {
-  return (
-    event.metaKey ||
-    event.ctrlKey ||
-    event.shiftKey ||
-    event.altKey ||
-    event.button !== 0
-  );
-}
-
 const navLinkClass =
-  "relative font-heading text-sm tracking-[0.15em] uppercase text-foreground/80 transition-colors hover:text-primary sm:text-base " +
+  "relative font-heading text-sm tracking-[0.15em] uppercase text-foreground/80 transition-colors hover:text-primary active:text-primary sm:text-base " +
   "after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:bg-primary after:opacity-0 after:transition-opacity after:duration-150 " +
-  "hover:after:opacity-100";
+  "hover:after:opacity-100 active:after:opacity-100";
 
-const navLinkActiveClass = "text-primary after:opacity-100";
+function NavLinkLabel({ label }: { label: string }) {
+  const { pending } = useLinkStatus();
+  return <span className={cn(pending && "text-primary")}>{label}</span>;
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
-
-  function goTo(href: string, event: MouseEvent<HTMLAnchorElement>) {
-    if (isModifiedClick(event)) return;
-    event.preventDefault();
-    // Yield to the browser so the click can paint before the route transition work.
-    startTransition(() => {
-      setOpen(false);
-      router.push(href);
-    });
-  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95">
@@ -45,7 +28,7 @@ export function SiteHeader() {
         <Link
           href="/"
           className="flex items-center gap-3"
-          onClick={(event) => goTo("/", event)}
+          onClick={() => startTransition(() => setOpen(false))}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.svg" alt={siteConfig.name} className="h-24 w-auto" />
@@ -59,11 +42,9 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                prefetch
-                onClick={(event) => goTo(item.href, event)}
-                className={cn(navLinkClass, active && navLinkActiveClass)}
+                className={cn(navLinkClass, active && "text-primary after:opacity-100")}
               >
-                {item.label}
+                <NavLinkLabel label={item.label} />
               </Link>
             );
           })}
@@ -89,15 +70,15 @@ export function SiteHeader() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    prefetch
-                    onClick={(event) => goTo(item.href, event)}
+                    onClick={() => startTransition(() => setOpen(false))}
                     className={cn(
-                      "relative inline-block py-3 font-heading text-base tracking-[0.15em] uppercase text-foreground/80 transition-colors hover:text-primary",
+                      "relative inline-block py-3 font-heading text-base tracking-[0.15em] uppercase text-foreground/80 transition-colors hover:text-primary active:text-primary",
                       "after:pointer-events-none after:absolute after:inset-x-0 after:bottom-2 after:h-px after:bg-primary after:opacity-0 after:transition-opacity after:duration-150",
-                      active ? "text-primary after:opacity-100" : "hover:after:opacity-100"
+                      "hover:after:opacity-100 active:after:opacity-100",
+                      active && "text-primary after:opacity-100"
                     )}
                   >
-                    {item.label}
+                    <NavLinkLabel label={item.label} />
                   </Link>
                 </li>
               );
