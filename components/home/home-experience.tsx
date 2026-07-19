@@ -9,11 +9,11 @@ export function HomeExperience() {
       <section className="relative overflow-hidden border-b border-border/60">
         <PosterWall />
         <div className="relative mx-auto max-w-3xl px-6 py-32 text-center sm:py-44">
-          <p className="animate-in fade-in slide-in-from-bottom-2 font-heading text-xs tracking-[0.35em] text-primary uppercase duration-700">
+          <p className="animate-in fade-in slide-in-from-bottom-2 font-heading text-xs tracking-[0.35em] text-primary uppercase duration-700 sm:text-sm">
             Vector Conversion &amp; Embroidery Digitizing
           </p>
           <TypewriterHeadline />
-          <p className="animate-in fade-in slide-in-from-bottom-4 mt-6 text-base leading-relaxed text-muted-foreground delay-100 duration-700 sm:text-lg">
+          <p className="animate-in fade-in slide-in-from-bottom-4 mt-6 text-base leading-relaxed text-muted-foreground delay-100 duration-700 sm:text-lg md:text-xl">
             20 years redrawing artwork by hand into vector art and
             embroidery-ready files, trusted by clients worldwide.
           </p>
@@ -27,7 +27,7 @@ export function HomeExperience() {
 
       <section className="border-b border-border/60">
         <div className="mx-auto max-w-3xl px-6 py-24 text-center">
-          <p className="font-heading text-xs tracking-[0.35em] text-primary uppercase">
+          <p className="font-heading text-xs tracking-[0.35em] text-primary uppercase sm:text-sm">
             How we work with you
           </p>
           <h2 className="mt-6 font-mango text-3xl leading-[1.15] text-foreground sm:text-5xl">

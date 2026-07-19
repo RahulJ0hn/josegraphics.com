@@ -70,7 +70,7 @@ export function TypewriterHeadline() {
 
   return (
     <h1
-      className="animate-in fade-in slide-in-from-bottom-4 mt-6 min-h-[2.2em] font-mango text-5xl leading-[1.05] text-foreground duration-700 sm:min-h-[2.1em] sm:text-7xl"
+      className="animate-in fade-in slide-in-from-bottom-4 mt-6 min-h-[2.4em] font-mango text-3xl leading-[1.1] text-foreground duration-700 sm:min-h-[2.1em] sm:text-6xl md:text-7xl"
       aria-live="polite"
     >
       <span>{reducedMotion ? LINES[index] : text}</span>

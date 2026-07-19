@@ -24,14 +24,18 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95">
-      <div className="mx-auto flex h-32 max-w-6xl items-center justify-between px-6">
+      <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6 sm:h-28 md:h-32">
         <Link
           href="/"
           className="flex items-center gap-3"
           onClick={() => startTransition(() => setOpen(false))}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.svg" alt={siteConfig.name} className="h-24 w-auto" />
+          <img
+            src="/logo.svg"
+            alt={siteConfig.name}
+            className="h-14 w-auto sm:h-20 md:h-24"
+          />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { portfolioItems, type PortfolioItem } from "@/lib/portfolio";
+import { cn } from "@/lib/utils";
 
 const TILE_HEIGHT = 150;
 // Cap how many pieces feed the wall so soft navigations to Home stay light.
@@ -14,10 +15,18 @@ function buildRow(items: PortfolioItem[], rotateBy: number) {
   return [...rotated, ...rotated];
 }
 
-const ROWS: { items: PortfolioItem[]; reverse: boolean; duration: number }[] = [
+const ROWS: {
+  items: PortfolioItem[];
+  reverse: boolean;
+  duration: number;
+  /** Extra rows only on small screens so the hero wall fills tall phone viewports. */
+  mobileOnly?: boolean;
+}[] = [
   { items: buildRow(WALL_ITEMS, 0), reverse: false, duration: 62 },
+  { items: buildRow(WALL_ITEMS, 2), reverse: true, duration: 68, mobileOnly: true },
   { items: buildRow(WALL_ITEMS, 3), reverse: true, duration: 74 },
   { items: buildRow(WALL_ITEMS, 5), reverse: false, duration: 84 },
+  { items: buildRow(WALL_ITEMS, 6), reverse: true, duration: 78, mobileOnly: true },
 ];
 
 export function PosterWall() {
@@ -42,13 +51,15 @@ export function PosterWall() {
 
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-      <div className="flex h-full flex-col justify-center gap-3 opacity-45 sm:gap-4">
+      <div className="flex h-full flex-col justify-evenly gap-2 py-2 opacity-45 sm:justify-center sm:gap-4 sm:py-0">
         {ROWS.map((row, i) => (
           <div
             key={i}
-            className={`flex w-max shrink-0 gap-3 sm:gap-4 ${
-              row.reverse ? "animate-wall-scroll-reverse" : "animate-wall-scroll"
-            }`}
+            className={cn(
+              "flex w-max shrink-0 gap-2 sm:gap-4",
+              row.reverse ? "animate-wall-scroll-reverse" : "animate-wall-scroll",
+              row.mobileOnly && "sm:hidden"
+            )}
             style={{ animationDuration: `${row.duration}s` }}
           >
             {row.items.map((item, j) => (
@@ -61,7 +72,7 @@ export function PosterWall() {
                 sizes="200px"
                 quality={60}
                 loading="lazy"
-                className="h-[110px] w-auto shrink-0 rounded-md object-cover sm:h-[150px]"
+                className="h-[88px] w-auto shrink-0 rounded-md object-cover sm:h-[150px]"
               />
             ))}
           </div>

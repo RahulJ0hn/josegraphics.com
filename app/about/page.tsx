@@ -21,11 +21,16 @@ export default function AboutPage() {
       <PageHero
         eyebrow="About Us"
         title="Your in-house art department, wherever you are."
-        lede="Jose Graphics is a graphics design studio led by Jose Ajimon, covering every kind of graphics work — advertising, re-creating artwork into scalable formats, template placing, photo enhancing, illustration, and digitizing logos and artwork for embroidery."
       />
 
       <section className="mx-auto max-w-3xl px-6 pb-16">
-        <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
+        <div className="space-y-6 text-base leading-relaxed text-muted-foreground text-justify sm:text-lg">
+          <p>
+            Jose Graphics is a graphics design studio led by Jose Ajimon,
+            covering every kind of graphics work — advertising, re-creating
+            artwork into scalable formats, template placing, photo enhancing,
+            illustration, and digitizing logos and artwork for embroidery.
+          </p>
           <p>
             We are a vector conversion studio: we transform pixel-based images —
             JPG, TIFF, or PNG — into scalable, high-quality vector graphics —
