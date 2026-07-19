@@ -1,7 +1,14 @@
 "use client";
 
-import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Canvas, extend, invalidate, useFrame, useThree } from "@react-three/fiber";
+import {
+  memo,
+  startTransition,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 import Image from "next/image";
 import { DitherMaterial } from "@/components/portfolio/dither-material";
@@ -20,12 +27,17 @@ const TRANSITION_MS = 1400;
 
 type Stage = { key: string; label: string; src: string };
 
+type TransitionState = {
+  fromIdx: number;
+  toIdx: number;
+  startTime: number | null;
+  active: boolean;
+  onSettle: (idx: number) => void;
+};
+
 // "object-fit: contain" for a texture sampled inside a differently-shaped
 // plane: the full texture stays visible, letterboxed on the shorter axis,
 // instead of being cropped to fill (which is what "cover" math would do).
-// This matters here because before/wireframe/vector images for the same
-// piece are each cropped independently and rarely share an identical aspect
-// ratio, even though the plane itself is sized to just the vector's ratio.
 function containScaleOffset(textureAspect: number, planeAspect: number) {
   if (textureAspect > planeAspect) {
     const scaleY = textureAspect / planeAspect;
@@ -83,16 +95,10 @@ function Scene({
 }: {
   textures: (THREE.Texture | null)[];
   planeAspect: number;
-  transitionRef: React.MutableRefObject<{
-    fromIdx: number;
-    toIdx: number;
-    startTime: number | null;
-    active: boolean;
-    onSettle: (idx: number) => void;
-  }>;
+  transitionRef: React.MutableRefObject<TransitionState>;
 }) {
   const materialRef = useRef<InstanceType<typeof DitherMaterial>>(null);
-  const { viewport, invalidate } = useThree();
+  const { viewport, invalidate: invalidateFrame } = useThree();
 
   const uvs = useMemo(
     () =>
@@ -119,8 +125,8 @@ function Scene({
       material.uToOffset = uvs[transitionRef.current.fromIdx].offset;
       material.uProgress = 0;
     }
-    invalidate();
-  }, [textures, uvs, planeAspect, invalidate, transitionRef]);
+    invalidateFrame();
+  }, [textures, uvs, planeAspect, invalidateFrame, transitionRef]);
 
   useFrame((state) => {
     const material = materialRef.current;
@@ -141,7 +147,7 @@ function Scene({
     material.uToOffset = uvs[t.toIdx].offset;
     material.uProgress = ease(progress);
 
-    invalidate();
+    invalidateFrame();
 
     if (progress >= 1) {
       t.active = false;
@@ -157,6 +163,27 @@ function Scene({
     </mesh>
   );
 }
+
+const DitherCanvas = memo(function DitherCanvas({
+  textures,
+  ratio,
+  transitionRef,
+}: {
+  textures: (THREE.Texture | null)[];
+  ratio: number;
+  transitionRef: React.MutableRefObject<TransitionState>;
+}) {
+  return (
+    <Canvas
+      frameloop="demand"
+      gl={{ antialias: false, powerPreference: "high-performance" }}
+      dpr={1}
+      resize={{ offsetSize: true }}
+    >
+      <Scene textures={textures} planeAspect={ratio} transitionRef={transitionRef} />
+    </Canvas>
+  );
+});
 
 export function DitherReveal({
   before,
@@ -180,14 +207,14 @@ export function DitherReveal({
   const tex0 = useDisposableTexture(stages[0]?.src ?? null);
   const tex1 = useDisposableTexture(stages[1]?.src ?? null);
   const tex2 = useDisposableTexture(stages[2]?.src ?? null);
-  const textures = [tex0, tex1, tex2];
+  const textures = useMemo(() => [tex0, tex1, tex2], [tex0, tex1, tex2]);
 
   const [displayIndex, setDisplayIndex] = useState(0);
   const activeIndexRef = useRef(0);
-  const transitionRef = useRef({
+  const transitionRef = useRef<TransitionState>({
     fromIdx: 0,
     toIdx: 0,
-    startTime: null as number | null,
+    startTime: null,
     active: false,
     onSettle: (idx: number) => {
       activeIndexRef.current = idx;
@@ -211,7 +238,10 @@ export function DitherReveal({
         activeIndexRef.current = settledIdx;
       },
     };
-    setDisplayIndex(idx);
+    // Kick the demand frameloop without waiting on React, then update the
+    // button styles in a transition so the click can paint first (INP).
+    invalidate();
+    startTransition(() => setDisplayIndex(idx));
   };
 
   const allLoaded = stages.every((_, i) => textures[i] !== null);
@@ -227,14 +257,7 @@ export function DitherReveal({
           {singleImage ? (
             <Image src={after} alt={alt} fill sizes="700px" className="object-contain p-6" />
           ) : allLoaded ? (
-            <Canvas
-              frameloop="demand"
-              gl={{ antialias: true }}
-              dpr={[1, 2]}
-              resize={{ offsetSize: true }}
-            >
-              <Scene textures={textures} planeAspect={ratio} transitionRef={transitionRef} />
-            </Canvas>
+            <DitherCanvas textures={textures} ratio={ratio} transitionRef={transitionRef} />
           ) : null}
         </div>
       </div>

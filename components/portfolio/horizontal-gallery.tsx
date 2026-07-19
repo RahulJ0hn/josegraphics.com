@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { startTransition, useEffect, useRef, type MouseEvent } from "react";
 import type { PortfolioItem } from "@/lib/portfolio";
 
 function lerp(start: number, end: number, ease: number) {
@@ -15,10 +16,27 @@ const RESUME_DELAY = 1800; // ms of inactivity before auto-scroll resumes
 const LOOP_COPIES = 3;
 
 export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
+  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const loopItems = Array.from({ length: LOOP_COPIES }, () => items).flat();
+
+  function goTo(href: string, event: MouseEvent<HTMLAnchorElement>) {
+    if (
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      event.button !== 0
+    ) {
+      return;
+    }
+    event.preventDefault();
+    startTransition(() => {
+      router.push(href);
+    });
+  }
 
   useEffect(() => {
     const container = containerRef.current;
@@ -131,6 +149,8 @@ export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
           <Link
             key={`${item.slug}-${i}`}
             href={`/portfolio/${item.slug}`}
+            prefetch
+            onClick={(event) => goTo(`/portfolio/${item.slug}`, event)}
             className="group block h-[340px] w-[300px] shrink-0"
           >
             <div className="relative h-full w-full overflow-hidden rounded-xl border border-border/60 bg-card shadow-xl transition-colors duration-300 group-hover:border-primary/50">
@@ -142,9 +162,12 @@ export function HorizontalGallery({ items }: { items: PortfolioItem[] }) {
                 className="object-contain p-6 transition-transform duration-500 group-hover:scale-[1.03]"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+              <div
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent"
+                aria-hidden="true"
+              />
 
-              <div className="absolute inset-x-0 bottom-0 p-6">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6">
                 <p className="text-xs tracking-[0.2em] text-primary uppercase">
                   {item.category}
                 </p>
