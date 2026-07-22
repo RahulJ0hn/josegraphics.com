@@ -7,6 +7,8 @@ export type PortfolioItem = {
   before: string | null;
   wireframe: string | null;
   after: string;
+  /** Label for the final stage button (default: "Vector Art") */
+  afterLabel?: string;
   /** width / height of the `after` image, so cards can be sized to it exactly */
   ratio: number;
 };
@@ -82,7 +84,8 @@ export const portfolioItems: PortfolioItem[] = [
     before: "/portfolio/johns-transporting-before.jpg",
     wireframe: null,
     after: "/portfolio/johns-transporting-after.jpg",
-    ratio: 978 / 679,
+    afterLabel: "Digitized",
+    ratio: 958 / 632,
   },
   {
     slug: "bold-city-brass",
@@ -94,19 +97,21 @@ export const portfolioItems: PortfolioItem[] = [
     before: "/portfolio/bold-city-brass-before.jpg",
     wireframe: null,
     after: "/portfolio/bold-city-brass-after.jpg",
-    ratio: 720 / 679,
+    afterLabel: "Digitized",
+    ratio: 723 / 639,
   },
   {
     slug: "allatoona-njrotc",
-    title: "Allatoona NJROTC Emblem",
+    title: "Allatoona NJROTC Emblem Digitizing",
     client: "Allatoona High School NJROTC",
-    category: "Logo Design",
+    category: "Embroidery Digitizing",
     description:
-      "A crest built clean in vector from the first sketch, ready for patches, banners, and web use alike.",
-    before: null,
+      "A school crest taken from clean artwork into a stitch-ready embroidery file, keeping the rope border and saber detail clear at patch size.",
+    before: "/portfolio/allatoona-njrotc-before.jpg",
     wireframe: null,
     after: "/portfolio/allatoona-njrotc-after.jpg",
-    ratio: 188 / 189,
+    afterLabel: "Digitized",
+    ratio: 2217 / 2228,
   },
   {
     slug: "flame-lion",

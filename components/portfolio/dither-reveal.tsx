@@ -187,19 +187,25 @@ export function DitherReveal({
   before,
   wireframe,
   after,
+  afterLabel = "Vector Art",
   alt,
   ratio,
 }: {
   before: string | null;
   wireframe: string | null;
   after: string;
+  afterLabel?: string;
   alt: string;
   ratio: number;
 }) {
   const stages: Stage[] = [
     before && { key: "original", label: "Original", src: before },
     wireframe && { key: "wireframe", label: "Wireframe", src: wireframe },
-    { key: "vector", label: "Vector Art", src: after },
+    {
+      key: afterLabel === "Digitized" ? "digitized" : "vector",
+      label: afterLabel,
+      src: after,
+    },
   ].filter((s): s is Stage => Boolean(s));
 
   const tex0 = useDisposableTexture(stages[0]?.src ?? null);

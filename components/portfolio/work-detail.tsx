@@ -21,6 +21,7 @@ export function WorkDetail({ item }: { item: PortfolioItem }) {
         before={item.before}
         wireframe={item.wireframe}
         after={item.after}
+        afterLabel={item.afterLabel}
         alt={item.title}
         ratio={item.ratio}
       />
